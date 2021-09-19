@@ -12,6 +12,9 @@
     // import ui lib
     import { onMount } from 'svelte';
 
+    // locale lib
+    import { getString } from '../libs/locale';
+
     // http lib
     import { getRequestWrapper } from '../libs/http.js';
 
@@ -45,6 +48,10 @@
 {#if ready}
     {#if init_successful}
         <main>
+            <p class="title" style="text-align: center; margin-bottom: 32px;">{getString(lang, 'title')}</p>
+            <div class="description">
+                {@html getString(lang, 'description')}
+            </div>
             <MapContainer bind:lang={lang} parties={parties} districts_geojson={districts_geojson}/>
         </main>
     {/if}
@@ -58,7 +65,14 @@
     main {
         text-align: center;
         padding: 1em;
-        margin: 64px auto 0px;
+        margin: 32px auto 0px;
+    }
+
+    .description {
+        margin: auto;
+        max-width: var(--max-width-large);
+        padding-bottom: 48px;
+        text-align: justify;
     }
 
 </style>

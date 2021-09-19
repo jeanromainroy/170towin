@@ -14,6 +14,7 @@
     // import svelte components
     import Map from '../dataviz/Map/Map.svelte';
     import Table from '../components/Table.svelte';
+    import Button from '../components/Button.svelte';
 
     // import ui libs
     import { onMount } from 'svelte';
@@ -45,6 +46,24 @@
     function getToolTipText (d) {
         const { NOMSEN, NOMSFR, CODEPROV } = d['properties']
         return `${lang === 'eng' ? NOMSEN : NOMSFR}<br><p style='font-size: 12px;'>${CODEPROV}</p>`
+    }
+
+    function reset(){
+        reset_count();
+        reset_map();
+        update_table();
+    }
+
+    function reset_map(){
+        g.selectAll('path')
+            .each(function(d){
+                // reset
+                d3.select(this)
+                    .attr('data-party-index', -1)
+                    .attr('data-party', undefined)
+                    .style('fill', '#333333')
+                    .style('fill-opacity', 0.0);
+            })
     }
 
     function reset_count(){
@@ -83,7 +102,7 @@
 
         // create headers
         const headers = provinces.map(p => p)
-        headers.unshift('Total')
+        headers.unshift('Canada')
         headers.unshift('')
 
         // create values
@@ -92,35 +111,12 @@
                 return seats[party['key']][province]
             })
             row.unshift(seats[party['key']]['total'])
-            row.unshift(party['key'])
+            row.unshift(party['short_name'][lang])
             return row
         })
 
         // set
         seats_tabular = [headers, ...values];
-    }
-
-    function update_table_old(){
-
-        // create headers
-        const headers = parties.map(p => p['key'])
-        headers.unshift('Provinces')
-
-        // create values
-        const values = provinces.map(province => {
-            const row = parties.map(party => {
-                return seats[party['key']][province]
-            })
-            row.unshift(province)
-            return row
-        })
-        const totals = parties.map(party => {
-            return seats[party['key']]['total']
-        })
-        totals.unshift('Total')
-
-        // set
-        seats_tabular = [headers, totals, ...values];
     }
 
     function drawMask(){
@@ -265,18 +261,21 @@
 <div id="mapcontainer">
     <Map bind:projection={projection} bind:map={map} bind:paths={paths} bind:svg={svg} bind:g={g} bind:tooltip={tooltip}/>
 </div>
+
 <br><br>
+
 
 <!-- The seats count -->
 <Table data={seats_tabular} download_button={false} cell_func={cell_func}/>
 
+<Button onclick={() => { reset(); }} string_key='reset' bind:lang={lang}/>
 <br>
 
 <style>
 
     #mapcontainer{
         position: relative;
-        width: 80vw;
+        width: 65vw;
         height: 65vh;
         margin: auto;
         background-color: white;
