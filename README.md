@@ -84,19 +84,6 @@ Set your constants here,
 
 ### Linter
 
-To lint the backend,
-
-    eslint api/* --fix
-
 To lint the frontend,
 
     eslint src/scripts/* --fix
-
-
-### Data Model
-
-The data model is composed of 1 tables
-
-**Account**
-
-*id*, *username*, *password*, *last_login_at*, *sid*, *created_at*

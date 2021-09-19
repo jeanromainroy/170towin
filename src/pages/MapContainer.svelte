@@ -9,7 +9,7 @@
     import * as d3 from 'd3';
 
     // leaflet
-    import { LatLng } from 'leaflet';
+    import * as L from 'leaflet';
 
     // import svelte components
     import Map from '../dataviz/Map/Map.svelte';
@@ -151,13 +151,13 @@
                 if (polygon[0].length > 2) {
                     polygon.forEach(_polygon => {
                         const _latlngs = _polygon.map(p => {
-                            return new LatLng(p[1], p[0])
+                            return new L.LatLng(p[1], p[0])
                         });
                         latlngs.push(_latlngs);
                     })
                 }else{
                     const _latlngs = polygon.map(p => {
-                        return new LatLng(p[1], p[0])
+                        return new L.LatLng(p[1], p[0])
                     });
                     latlngs.push(_latlngs);
                 }
