@@ -2,7 +2,7 @@
 
 In Canada, 170 seats are needed to win a majority government. This web tool allows users to distribute the 338 seats.
 
-Live demo (here)[https://170towin.ca]
+Live demo [here](https://170towin.ca)
 
 
 ## Stack
