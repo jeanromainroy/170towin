@@ -1,0 +1,44 @@
+[
+    {
+        "key": "LPC",
+        "eng": "Liberal Party of Canada",
+        "fra": "Parti libéral du Canada",
+        "leader": "Justin Trudeau",
+        "color": "#e9332f"
+    },
+    {
+        "key": "CPC",
+        "eng": "Conservative Party of Canada",
+        "fra": "Parti conservateur du Canada",
+        "leader": "Erin O'Toole",
+        "color": "#194f99"
+    },
+    {
+        "key": "NDP",
+        "eng": "New Democratic Party",
+        "fra": "Nouveau Parti démocratique",
+        "leader": "Jagmeet Singh",
+        "color": "#f28135"
+    },
+    {
+        "key": "BQ",
+        "eng": "Bloc Québécois",
+        "fra": "Bloc Québécois",
+        "leader": "Yves-François Blanchet",
+        "color": "#7CDBF7"
+    },
+    {
+        "key": "GPC",
+        "eng": "Green Party of Canada",
+        "fra": "Parti Vert du Canada",
+        "leader": "Annamie Paul",
+        "color": "#7bbd51"
+    },
+    {
+        "key": "PPC",
+        "eng": "People's Party of Canada",
+        "fra": "Parti Populaire du Canada",
+        "leader": "Maxime Bernier",
+        "color": "#442D7B"
+    }
+]
