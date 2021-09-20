@@ -88,10 +88,11 @@
 
     function reset_map(){
         g.selectAll('path')
-            .each(function(){
+            .each(function(d){
                 // reset
                 d3.select(this)
                     .attr('data-party-index', -1)
+                    .attr('data-uid', d['properties']['NUMCF'])
                     .attr('data-party', undefined)
                     .style('fill', '#333333')
                     .style('fill-opacity', 0.0);
@@ -115,11 +116,11 @@
         const _districts = d3.selectAll('path').nodes().map(n => {
 
             // get data
-            const { UID, province, party } = n.dataset;
+            const { uid, province, party } = n.dataset;
 
             return {
                 'party': party,
-                'UID': UID,
+                'uid': uid,
                 'province': province
             }
         });
@@ -127,8 +128,8 @@
         // keep unique
         const districts = {}
         _districts.forEach(d => {
-            if (d['UID'] === undefined) return;
-            districts[d['UID']] = d
+            if (d['uid'] === undefined) return;
+            districts[d['uid']] = d
         })
 
         // convert to arr
@@ -168,8 +169,8 @@
         nbr_districts_selected = districts.filter(d => d['party'] !== undefined && d['party'] !== null).length;
 
         // grab data from map
-        Object.keys(districts).forEach(UID => {
-            const district = districts[UID]
+        Object.keys(districts).forEach(uid => {
+            const district = districts[uid]
             const party = district['party'] === undefined || district['party'] === null ? null : district['party']
             const province = TT.includes(district['province']) ? 'TT' : district['province'];
             if (party === null) return;
@@ -266,7 +267,7 @@
             .append('path')
             .each(function(d){
                 d3.select(this).attr('data-party-index', -1)
-                d3.select(this).attr('data-UID', d['properties']['NUMCF'])
+                d3.select(this).attr('data-uid', d['properties']['NUMCF'])
                 d3.select(this).attr('data-province', TT.includes(d['properties']['CODEPROV']) ? 'TT' : d['properties']['CODEPROV'])
             })
             .attr('d', projection)
@@ -290,7 +291,7 @@
                 if(wasDragged) return;
 
                 // get data
-                const UID = d3.select(this).attr('data-UID')
+                const uid = d3.select(this).attr('data-uid')
                 const partyIndex = d3.select(this).attr('data-party-index')
 
                 // increment index
@@ -302,10 +303,10 @@
                 // new color
                 const new_color = color(new_party)
 
-                // get all paths with this UID
+                // get all paths with this uid
                 const paths = d3.selectAll('path').filter(function(){
-                    const _UID = +d3.select(this).attr('data-UID');
-                    return +_UID === +UID
+                    const _uid = +d3.select(this).attr('data-uid');
+                    return +_uid === +uid
                 })
 
                 paths

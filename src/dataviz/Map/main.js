@@ -42,11 +42,11 @@ export function initMap(){
 
     // Initialize the SVG context that will host the Leaflet map.
     const svg = d3.select(map.getPanes().overlayPane).append('svg')
-                    .attr('width', x)
-                    .attr('height', y);
+        .attr('width', x)
+        .attr('height', y);
 
     // set the svg style
-    svg.attr("overflow", "overlay");
+    svg.attr("overflow", "unset");
 
     // Initialize the group in wich we draw our objects
     const g = svg.append("g").attr("class", "leaflet-zoom-hide");
@@ -161,7 +161,7 @@ export function highlightPaths(g, regions){
         })
 }
 
-export function updateMap (map, g, projection) {
+export function updateMap (map, svg, g, projection) {
 
     // get elements
     const paths = g.selectAll('path').nodes()

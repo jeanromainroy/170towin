@@ -53,9 +53,9 @@
 
         // add listener to update map on zoom event
 		map.on("zoom", () => {
-            updateMap(map, g, projection);
+            updateMap(map, svg, g, projection);
         });
-		updateMap(map, g, projection);
+		updateMap(map, svg, g, projection);
 
         // prevent zoom on double click
         map.doubleClickZoom.disable();

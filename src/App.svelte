@@ -44,7 +44,7 @@
             <img id="logo" alt="logo" src="./assets/logo.png">
         </div>
         <div style="width: 50%; justify-content: center; text-align: center;">
-            <h3>{title}</h3>
+            <p style="font-size:1.05em">{title}</p>
         </div>
         <div style="width: 25%; justify-content: flex-end;">
             {#each SUPPORTED_LANGUAGES as language}
