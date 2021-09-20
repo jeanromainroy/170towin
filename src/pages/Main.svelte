@@ -21,6 +21,7 @@
     // data
     let districts_geojson;
     let parties;
+    let results;
 
     // ui logic
     let ready = false;
@@ -29,7 +30,9 @@
     async function load_data(){
         districts_geojson = await getRequestWrapper('assets/data/electoral-districts.geojson', 'eng')
         parties = await getRequestWrapper('assets/data/parties.json', 'eng')
-        return districts_geojson !== null && parties !== null;
+        results = await getRequestWrapper('assets/data/results_2019.json', 'eng')
+
+        return districts_geojson !== null && parties !== null && results !== null;
     }
 
     onMount(async () => {
@@ -52,7 +55,7 @@
             <div class="description">
                 {@html getString(lang, 'description')}
             </div>
-            <MapContainer bind:lang={lang} parties={parties} districts_geojson={districts_geojson}/>
+            <MapContainer bind:lang={lang} parties={parties} districts_geojson={districts_geojson} results={results}/>
         </main>
     {/if}
 {:else}

@@ -243,12 +243,12 @@ export function request_PUT (url, payload = {}) {
 
 
 
-export async function getRequestWrapper (endpoint, lang) {
+export async function getRequestWrapper (endpoint, lang, responseType = 'json') {
     // init returned var
     let res = null;
 
     await new Promise((resolve, reject) => {
-        request_GET(endpoint).catch(error => {
+        request_GET(endpoint, responseType).catch(error => {
             // grab info
             const { status, statusText, message } = error
             const swal_text = (typeof message === 'string') ? message : statusText

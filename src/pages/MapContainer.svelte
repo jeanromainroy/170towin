@@ -4,6 +4,7 @@
     export let lang;
     export let districts_geojson;
     export let parties;
+    export let results;
 
     // d3 lib
     import * as d3 from 'd3';
@@ -39,6 +40,30 @@
     const provinces = [...new Set(districts_geojson.features.map(f => f['properties']['CODEPROV']))].filter(p => !TT.includes(p)).sort()
     provinces.push('TT');
 
+    // create mapping of the parties
+    const parties_map = {}
+    parties.forEach(party => parties_map[party['key']] = party)
+
+    // create a mapping of the results
+    const results_map = {}
+    results.forEach(r => results_map[+r['Electoral District Number/Numéro de circonscription']] = r)
+    Object.keys(results_map).forEach(k => {
+        const elected = results_map[k]['Elected Candidate/Candidat élu']
+        if (elected.includes('Conservative')){
+            results_map[k]['party'] = 'CPC'
+        }else if (elected.includes('Liberal')){
+            results_map[k]['party'] = 'LPC'
+        }else if (elected.includes('Bloc Québécois')){
+            results_map[k]['party'] = 'BQ'
+        }else if (elected.includes('NDP')){
+            results_map[k]['party'] = 'NDP'
+        }else if (elected.includes('Green Party')){
+            results_map[k]['party'] = 'GPC'
+        }else{
+            results_map[k]['party'] = null
+        }
+    })
+
     // init seat count
     let seats = {}
     let seats_tabular = null;
@@ -51,12 +76,14 @@
     function reset(){
         reset_count();
         reset_map();
+        setResults();
+        update_count();
         update_table();
     }
 
     function reset_map(){
         g.selectAll('path')
-            .each(function(d){
+            .each(function(){
                 // reset
                 d3.select(this)
                     .attr('data-party-index', -1)
@@ -233,6 +260,21 @@
             })
     }
 
+    function setResults(){
+        g.selectAll('path')
+            .each(function(){
+                const NUMCF = +d3.select(this).data()[0]['properties']['NUMCF'];
+                const less_than_5 = results_map[NUMCF]['Less than 5 %'].length > 0
+                const key = results_map[NUMCF]['party']
+                if (key === null || less_than_5) return;
+
+                d3.select(this)
+                    .attr('data-party', key)
+                    .style('fill', parties_map[key]['color'])
+                    .style('fill-opacity', opacity_clicked);
+            })
+    }
+
     onMount(() => {
 
         // draw paths
@@ -241,11 +283,8 @@
         // draw mask
         drawMask();
 
-        // update count
-        update_count();
-
-        // update table
-        update_table();
+        // reset
+        reset();
     })
 
     const cell_func = function(cell, val, row_id, col_id){
