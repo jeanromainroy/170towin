@@ -106,22 +106,32 @@
 
     function update_count(){
 
+        // get all the electoral districts
+        const _districts = d3.selectAll('path').nodes().map(n => {
+
+            // get data
+            const { UID, province, party } = n.dataset;
+
+            return {
+                'party': party,
+                'UID': UID,
+                'province': province
+            }
+        });
+        const districts = {}
+        _districts.forEach(d => districts[d['UID']] = d)
+
         // reset to 0
         reset_count();
 
         // grab data from map
-        Object.keys(seats).forEach(key => {
-            const _provinces = d3.selectAll('path').filter(function(){
-                const _key = d3.select(this).attr('data-party');
-                return key == _key;
-            }).nodes().map(n => n.dataset.province);
-            _provinces.forEach(p => {
-                seats[key][p] += 1
-                if (TT.includes(p)) {
-                    seats[key]['TT'] += 1
-                }
-            })
-            seats[key]['total'] = _provinces.length
+        Object.keys(districts).forEach(UID => {
+            const district = districts[UID]
+            const party = district['party'] === undefined || district['party'] === null ? null : district['party']
+            const province = TT.includes(district['province']) ? 'TT' : district['province'];
+            if (party === null) return;
+            seats[district['party']][province] += 1
+            seats[district['party']]['total'] += 1
         })
     }
 
@@ -213,6 +223,7 @@
             .append('path')
             .each(function(d){
                 d3.select(this).attr('data-party-index', -1)
+                d3.select(this).attr('data-UID', d['properties']['NUMCF'])
                 d3.select(this).attr('data-province', TT.includes(d['properties']['CODEPROV']) ? 'TT' : d['properties']['CODEPROV'])
             })
             .attr('d', projection)
@@ -235,9 +246,12 @@
             .on('click', function(){
                 if(wasDragged) return;
 
+                // get data
+                const UID = d3.select(this).attr('data-UID')
+                const partyIndex = d3.select(this).attr('data-party-index')
+
                 // increment index
-                let index = +d3.select(this).attr('data-party-index')
-                index = (index + 1) % parties.length;
+                let index = (+partyIndex + 1) % parties.length;
 
                 // new party
                 const new_party = parties[index]['key']
@@ -245,8 +259,13 @@
                 // new color
                 const new_color = color(new_party)
 
-                // set
-                d3.select(this)
+                // get all paths with this UID
+                const paths = d3.selectAll('path').filter(function(){
+                    const _UID = +d3.select(this).attr('data-UID');
+                    return +_UID === +UID
+                })
+
+                paths
                     .attr('data-party-index', index)
                     .attr('data-party', new_party)
                     .style('fill', new_color)
