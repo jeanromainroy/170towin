@@ -146,7 +146,7 @@
         counts.sort((a, b) => b[1] - a[1])
 
         // set title
-        if (counts[0][1] === counts[0][2]){
+        if (counts[0][1] === counts[1][1]){
             title = 'Hung parliament'
         }else if(counts[0][1] >= 170){
             title = `${counts[0][0]} majority`
