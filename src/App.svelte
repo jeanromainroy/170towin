@@ -9,6 +9,9 @@
     // import pages
     import Main from './pages/Main.svelte';
 
+    // title
+    let title = '';
+
     // grab
     let lang = loadLangFromURL() || 'eng';
 
@@ -21,7 +24,7 @@
 </script>
 
 <!-- Set app name -->
-<title>{getString(lang, 'short_title')}</title>
+<title>{title}</title>
 
 <!-- Header -->
 {#if isMobile()}
@@ -41,7 +44,7 @@
             <img id="logo" alt="logo" src="./assets/logo.png">
         </div>
         <div style="width: 50%; justify-content: center; text-align: center;">
-            <h3>{getString(lang, 'short_title')}</h3>
+            <h3>{title}</h3>
         </div>
         <div style="width: 25%; justify-content: flex-end;">
             {#each SUPPORTED_LANGUAGES as language}
@@ -53,7 +56,7 @@
 
 
 <!-- Where the content goes -->
-<Main bind:lang={lang}/>
+<Main bind:title={title} bind:lang={lang}/>
 
 <!-- Footer -->
 <div class="footer">

@@ -5,6 +5,7 @@
     export let districts_geojson;
     export let parties;
     export let results;
+    export let title;
 
     // d3 lib
     import * as d3 from 'd3';
@@ -67,6 +68,9 @@
     // init seat count
     let seats = {}
     let seats_tabular = null;
+    let nbr_districts = 0;
+    let nbr_districts_selected = 0;
+
 
     function getToolTipText (d) {
         const { NOMSEN, NOMSFR, CODEPROV } = d['properties']
@@ -78,6 +82,7 @@
         reset_map();
         setResults();
         update_count();
+        update_title();
         update_table();
     }
 
@@ -104,7 +109,7 @@
         })
     }
 
-    function update_count(){
+    function get_districs_data_from_map(){
 
         // get all the electoral districts
         const _districts = d3.selectAll('path').nodes().map(n => {
@@ -118,11 +123,49 @@
                 'province': province
             }
         });
+
+        // keep unique
         const districts = {}
-        _districts.forEach(d => districts[d['UID']] = d)
+        _districts.forEach(d => {
+            if (d['UID'] === undefined) return;
+            districts[d['UID']] = d
+        })
+
+        // convert to arr
+        return Object.keys(districts).map(k => districts[k]);
+    }
+
+    function update_title(){
+
+        // group seats by parties
+        const counts = Object.keys(seats).map(party => {
+            return [party, +seats[party]['total']]
+        })
+
+        // sort in descending order
+        counts.sort((a, b) => b[1] - a[1])
+
+        // set title
+        if (counts[0][1] === counts[0][2]){
+            title = 'Hung parliament'
+        }else if(counts[0][1] >= 170){
+            title = `${counts[0][0]} majority`
+        }else if(counts[0][1] < 170){
+            title = `${counts[0][0]} minority`
+        }
+    }
+
+    function update_count(){
+
+        // get data from map districts
+        const districts = get_districs_data_from_map();
 
         // reset to 0
         reset_count();
+
+        // set topline metrics
+        nbr_districts = districts.length;
+        nbr_districts_selected = districts.filter(d => d['party'] !== undefined && d['party'] !== null).length;
 
         // grab data from map
         Object.keys(districts).forEach(UID => {
@@ -276,6 +319,9 @@
 
                 // update table
                 update_table();
+
+                // update title
+                update_title();
             })
     }
 
@@ -319,6 +365,7 @@
 <div id="mapcontainer">
     <Map bind:projection={projection} bind:map={map} bind:paths={paths} bind:svg={svg} bind:g={g} bind:tooltip={tooltip}/>
 </div>
+<p>{nbr_districts_selected}/{nbr_districts}</p>
 
 <br><br>
 

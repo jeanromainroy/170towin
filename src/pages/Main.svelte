@@ -2,6 +2,7 @@
 
     // properties
     export let lang;
+    export let title;
 
     // import components
     import Loader from '../components/Loader.svelte';
@@ -55,7 +56,7 @@
             <div class="description">
                 {@html getString(lang, 'description')}
             </div>
-            <MapContainer bind:lang={lang} parties={parties} districts_geojson={districts_geojson} results={results}/>
+            <MapContainer bind:lang={lang} bind:title={title} parties={parties} districts_geojson={districts_geojson} results={results}/>
         </main>
     {/if}
 {:else}
